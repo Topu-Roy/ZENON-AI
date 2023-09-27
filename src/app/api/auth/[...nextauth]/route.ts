@@ -3,6 +3,7 @@ import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { Prisma } from "@prisma/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import { users } from "./users";
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -12,17 +13,16 @@ const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
         email: { label: "Email", type: "text", placeholder: "john@app.com" },
       },
-      async authorize(credentials, req) {
-        const res = await fetch("/your/endpoint", {
-          method: "POST",
-          body: JSON.stringify(credentials),
-          headers: { "Content-Type": "application/json" },
-        });
-        const user = await res.json();
+      async authorize(credentials) {
+        if (!credentials || !credentials.email || !credentials.email) {
+          return null;
+        }
+        const user = users.find((user) => user.email === credentials.email);
 
-        if (res.ok && user) {
+        if (user?.password === credentials.password) {
           return user;
         }
+
         return null;
       },
     }),
