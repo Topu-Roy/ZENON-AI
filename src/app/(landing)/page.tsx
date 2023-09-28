@@ -1,7 +1,10 @@
-import React from 'react'
+'use client'
+import { ClientAuth } from "@/components/ClientAuth"
 
 export default function Home() {
     return (
-        <div>Home</div>
+        <>
+            <ClientAuth />
+        </>
     )
 }
